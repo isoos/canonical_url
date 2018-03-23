@@ -1,0 +1,14 @@
+name: canonical_url
+description: The UrlCanonicalizer is used for the process of converting an URL into a canonical (normalized) form.
+version: 1.0.0
+homepage: https://github.com/isoos/canonical_url
+author: Istvan Soos <istvan.soos@gmail.com>
+
+environment:
+  sdk: '>=1.20.1 <2.0.0'
+
+dependencies:
+  path: ^1.5.1
+
+dev_dependencies:
+  test: ^0.12.0
