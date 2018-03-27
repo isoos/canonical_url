@@ -60,9 +60,10 @@ class UrlCanonicalizer {
     } else {
       path = uri.path;
     }
+    final host = uri.host?.toLowerCase();
     return new Uri(
       scheme: scheme,
-      host: uri.host?.toLowerCase(),
+      host: host == null || host.isEmpty ? null : host,
       port: port,
       path: path,
       queryParameters: params == null || params.isEmpty ? null : params,
@@ -94,8 +95,7 @@ class UrlCanonicalizer {
             }
             keys = set.toList()..sort();
           } else {
-            keys = map.keys.where(
-                    (s) => order == null || !order.contains(s));
+            keys = map.keys.where((s) => order == null || !order.contains(s));
           }
           for (String key in keys) {
             params[key] = map[key];

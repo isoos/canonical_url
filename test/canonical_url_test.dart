@@ -128,6 +128,24 @@ void main() {
     });
   });
 
+  group('query parameters only', () {
+    final canonicalizer = new UrlCanonicalizer(removeFragment: true);
+    void ec(String from, String to) {
+      expect(canonicalizer.canonicalize(from), to);
+    }
+
+    test('single param', () {
+      final uri = new Uri(queryParameters: {'a': 'b'});
+      expect(uri.toString(), '?a=b');
+      ec(uri.toString(), '?a=b');
+    });
+
+    test('multiple param', () {
+      final uri = new Uri(queryParameters: {'b': 'x', 'a': 'b'});
+      ec(uri.toString(), '?a=b&b=x');
+    });
+  });
+
   group('contextualized url', () {
     final canonicalizer = new UrlCanonicalizer();
     void ec(String url, String context, String to) {
