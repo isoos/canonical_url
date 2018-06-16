@@ -4,6 +4,7 @@ import 'package:path/path.dart' as p;
 /// canonical (normalized) form.
 class UrlCanonicalizer {
   final bool sort;
+  final bool sortValues;
   final List<String> order;
   final List<String> whitelist;
   final List<String> blacklist;
@@ -11,6 +12,7 @@ class UrlCanonicalizer {
 
   UrlCanonicalizer({
     this.sort: true,
+    this.sortValues: false,
     this.order,
     this.removeFragment: false,
     this.whitelist,
@@ -18,10 +20,10 @@ class UrlCanonicalizer {
   });
 
   T canonicalize<T>(T url, {T context}) {
-    final uri = url is String ? Uri.parse(url) : url;
-    final contextUri = context is String ? Uri.parse(context) : context;
+    final uri = url is String ? Uri.parse(url) : url as Uri;
+    final contextUri = context is String ? Uri.parse(context) : context as Uri;
     final canonical = _canonicalize(_contextualize(uri, contextUri));
-    return url is String ? canonical.toString() : canonical;
+    return (url is String ? canonical.toString() : canonical) as T;
   }
 
   Uri _contextualize(Uri uri, Uri context) {
@@ -33,7 +35,7 @@ class UrlCanonicalizer {
         : p.canonicalize(p.join(_dirname(context.path), uri.path));
     return context.replace(
       path: path,
-      queryParameters: uri.queryParameters,
+      queryParameters: uri.queryParametersAll,
       fragment: uri.fragment,
     );
   }
@@ -47,7 +49,7 @@ class UrlCanonicalizer {
 
   Uri _canonicalize(Uri uri) {
     final scheme = uri.scheme?.toLowerCase();
-    final Map<String, String> params = _params(uri);
+    final Map<String, List<String>> params = _params(uri);
     final fragment =
         (removeFragment || !(uri.hasFragment && uri.fragment.isNotEmpty))
             ? null
@@ -71,16 +73,16 @@ class UrlCanonicalizer {
     );
   }
 
-  Map<String, String> _params(Uri uri) {
-    Map<String, String> params;
+  Map<String, List<String>> _params(Uri uri) {
+    Map<String, List<String>> params;
     if (uri.hasQuery) {
-      final map = new Map<String, String>.from(uri.queryParameters);
+      final map = new Map<String, List<String>>.from(uri.queryParametersAll);
       blacklist?.forEach(map.remove);
       if (whitelist != null) {
         map.removeWhere((key, value) => !whitelist.contains(key));
       }
       if (map.isNotEmpty) {
-        params = <String, String>{};
+        params = <String, List<String>>{};
         order?.forEach((p) {
           if (map.containsKey(p)) {
             params[p] = map[p];
@@ -100,6 +102,15 @@ class UrlCanonicalizer {
           for (String key in keys) {
             params[key] = map[key];
           }
+        }
+        if (sortValues) {
+          params = params.map((key, values) {
+            if (values.length > 1) {
+              values = new List<String>.from(values);
+              values.sort();
+            }
+            return new MapEntry(key, values);
+          });
         }
         assert(params.length == map.length);
       }

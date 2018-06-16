@@ -113,6 +113,36 @@ void main() {
     });
   });
 
+  group('multiple parameter values', () {
+    final canonicalizer = new UrlCanonicalizer();
+    void ec(String from, String to) {
+      expect(canonicalizer.canonicalize(from), to);
+    }
+
+    test('two values', () {
+      ec('http://example.com/abc?a=1&a=2', 'http://example.com/abc?a=1&a=2');
+    });
+
+    test('keeps order', () {
+      ec('http://example.com/abc?a=2&a=1', 'http://example.com/abc?a=2&a=1');
+    });
+  });
+
+  group('multiple parameter values with sort', () {
+    final canonicalizer = new UrlCanonicalizer(sortValues: true);
+    void ec(String from, String to) {
+      expect(canonicalizer.canonicalize(from), to);
+    }
+
+    test('two params', () {
+      ec('http://example.com/abc?a=1&a=2', 'http://example.com/abc?a=1&a=2');
+    });
+
+    test('sorted order', () {
+      ec('http://example.com/abc?a=2&a=1', 'http://example.com/abc?a=1&a=2');
+    });
+  });
+
   group('remove fragments', () {
     final canonicalizer = new UrlCanonicalizer(removeFragment: true);
     void ec(String from, String to) {
