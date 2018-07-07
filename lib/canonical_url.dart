@@ -30,9 +30,15 @@ class UrlCanonicalizer {
     if (context == null) return uri;
     if (uri.hasScheme && uri.host != null) return uri;
 
-    final path = uri.path.startsWith('/')
-        ? uri.path
-        : p.canonicalize(p.join(_dirname(context.path), uri.path));
+    String path;
+    if (uri.path.startsWith('/')) {
+      path = uri.path;
+    } else {
+      path = p.canonicalize(p.join(_dirname(context.path), uri.path));
+      if (uri.path.endsWith('/') && !path.endsWith('/')) {
+        path = '$path/';
+      }
+    }
     return context.replace(
       path: path,
       queryParameters: uri.queryParametersAll,

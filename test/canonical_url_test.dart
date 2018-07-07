@@ -198,6 +198,7 @@ void main() {
 
     test('trailing slash', () {
       ec('/abc/def/', 'http://example.com/xyz/', 'http://example.com/abc/def/');
+      ec('def/', 'http://example.com/xyz/', 'http://example.com/xyz/def/');
     });
   });
 }
