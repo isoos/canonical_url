@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- Bugfix: keep trailing slash.
+
 ## 1.0.2
 
 - Handling multiple query parameter values.

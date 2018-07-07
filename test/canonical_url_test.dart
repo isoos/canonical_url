@@ -195,5 +195,9 @@ void main() {
       ec('xyz?a=1', 'http://example.com/a/bc/',
           'http://example.com/a/bc/xyz?a=1');
     });
+
+    test('trailing slash', () {
+      ec('/abc/def/', 'http://example.com/xyz/', 'http://example.com/abc/def/');
+    });
   });
 }

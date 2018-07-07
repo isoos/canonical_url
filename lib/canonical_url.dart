@@ -59,6 +59,9 @@ class UrlCanonicalizer {
     String path;
     if (uri.hasAbsolutePath) {
       path = p.canonicalize(uri.path);
+      if (uri.path.endsWith('/') && !path.endsWith('/')) {
+        path = '$path/';
+      }
     } else {
       path = uri.path;
     }
