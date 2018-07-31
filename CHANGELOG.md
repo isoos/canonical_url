@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Enable Dart 2 versions.
+
 ## 1.0.3+1
 
 - Bugfix: keep trailing slash.
