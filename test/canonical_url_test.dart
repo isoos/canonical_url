@@ -4,7 +4,7 @@ import 'package:canonical_url/canonical_url.dart';
 
 void main() {
   group('default', () {
-    final canonicalizer = new UrlCanonicalizer();
+    final canonicalizer = UrlCanonicalizer();
     void ec(String from, String to) {
       expect(canonicalizer.canonicalize(from), to);
     }
@@ -37,7 +37,7 @@ void main() {
   });
 
   group('fixed parameter order', () {
-    final canonicalizer = new UrlCanonicalizer(order: ['c', 'b', 'a']);
+    final canonicalizer = UrlCanonicalizer(order: ['c', 'b', 'a']);
     void ec(String from, String to) {
       expect(canonicalizer.canonicalize(from), to);
     }
@@ -63,20 +63,20 @@ void main() {
 
   group('keep parameter order', () {
     test('no order otherwise', () {
-      final canonicalizer = new UrlCanonicalizer(sort: false);
+      final canonicalizer = UrlCanonicalizer(sort: false);
       expect(canonicalizer.canonicalize('http://example.com/abc?x=3&a=1&y=2'),
           'http://example.com/abc?x=3&a=1&y=2');
     });
 
     test('fixed order', () {
-      final canonicalizer = new UrlCanonicalizer(order: ['y'], sort: false);
+      final canonicalizer = UrlCanonicalizer(order: ['y'], sort: false);
       expect(canonicalizer.canonicalize('http://example.com/abc?x=3&a=1&y=2'),
           'http://example.com/abc?y=2&x=3&a=1');
     });
   });
 
   group('keep parameters', () {
-    final canonicalizer = new UrlCanonicalizer(whitelist: ['a']);
+    final canonicalizer = UrlCanonicalizer(whitelist: ['a']);
     void ec(String from, String to) {
       expect(canonicalizer.canonicalize(from), to);
     }
@@ -95,7 +95,7 @@ void main() {
   });
 
   group('remove parameters', () {
-    final canonicalizer = new UrlCanonicalizer(blacklist: ['a']);
+    final canonicalizer = UrlCanonicalizer(blacklist: ['a']);
     void ec(String from, String to) {
       expect(canonicalizer.canonicalize(from), to);
     }
@@ -114,7 +114,7 @@ void main() {
   });
 
   group('multiple parameter values', () {
-    final canonicalizer = new UrlCanonicalizer();
+    final canonicalizer = UrlCanonicalizer();
     void ec(String from, String to) {
       expect(canonicalizer.canonicalize(from), to);
     }
@@ -129,7 +129,7 @@ void main() {
   });
 
   group('multiple parameter values with sort', () {
-    final canonicalizer = new UrlCanonicalizer(sortValues: true);
+    final canonicalizer = UrlCanonicalizer(sortValues: true);
     void ec(String from, String to) {
       expect(canonicalizer.canonicalize(from), to);
     }
@@ -144,7 +144,7 @@ void main() {
   });
 
   group('remove fragments', () {
-    final canonicalizer = new UrlCanonicalizer(removeFragment: true);
+    final canonicalizer = UrlCanonicalizer(removeFragment: true);
     void ec(String from, String to) {
       expect(canonicalizer.canonicalize(from), to);
     }
@@ -159,25 +159,25 @@ void main() {
   });
 
   group('query parameters only', () {
-    final canonicalizer = new UrlCanonicalizer(removeFragment: true);
+    final canonicalizer = UrlCanonicalizer(removeFragment: true);
     void ec(String from, String to) {
       expect(canonicalizer.canonicalize(from), to);
     }
 
     test('single param', () {
-      final uri = new Uri(queryParameters: {'a': 'b'});
+      final uri = Uri(queryParameters: {'a': 'b'});
       expect(uri.toString(), '?a=b');
       ec(uri.toString(), '?a=b');
     });
 
     test('multiple param', () {
-      final uri = new Uri(queryParameters: {'b': 'x', 'a': 'b'});
+      final uri = Uri(queryParameters: {'b': 'x', 'a': 'b'});
       ec(uri.toString(), '?a=b&b=x');
     });
   });
 
   group('contextualized url', () {
-    final canonicalizer = new UrlCanonicalizer();
+    final canonicalizer = UrlCanonicalizer();
     void ec(String url, String context, String to) {
       expect(canonicalizer.canonicalize(url, context: context), to);
     }

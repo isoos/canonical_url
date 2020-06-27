@@ -1,7 +1,7 @@
 import 'package:canonical_url/canonical_url.dart';
 
 main() {
-  final urlc = new UrlCanonicalizer(removeFragment: true);
+  final urlc = UrlCanonicalizer(removeFragment: true);
 
   // prints http://example.com/b.txt
   print(urlc.canonicalize('http://example.com:80/a/../b.txt'));

@@ -11,10 +11,10 @@ class UrlCanonicalizer {
   final bool removeFragment;
 
   UrlCanonicalizer({
-    this.sort: true,
-    this.sortValues: false,
+    this.sort = true,
+    this.sortValues = false,
     this.order,
-    this.removeFragment: false,
+    this.removeFragment = false,
     this.whitelist,
     this.blacklist,
   });
@@ -72,7 +72,7 @@ class UrlCanonicalizer {
       path = uri.path;
     }
     final host = uri.host?.toLowerCase();
-    return new Uri(
+    return Uri(
       scheme: scheme,
       host: host == null || host.isEmpty ? null : host,
       port: port,
@@ -85,7 +85,7 @@ class UrlCanonicalizer {
   Map<String, List<String>> _params(Uri uri) {
     Map<String, List<String>> params;
     if (uri.hasQuery) {
-      final map = new Map<String, List<String>>.from(uri.queryParametersAll);
+      final map = Map<String, List<String>>.from(uri.queryParametersAll);
       blacklist?.forEach(map.remove);
       if (whitelist != null) {
         map.removeWhere((key, value) => !whitelist.contains(key));
@@ -115,10 +115,10 @@ class UrlCanonicalizer {
         if (sortValues) {
           params = params.map((key, values) {
             if (values.length > 1) {
-              values = new List<String>.from(values);
+              values = List<String>.from(values);
               values.sort();
             }
-            return new MapEntry(key, values);
+            return MapEntry(key, values);
           });
         }
         assert(params.length == map.length);

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- Modern Dart style.
+
 ## 1.0.4
 
 - Enable Dart 2 versions.
