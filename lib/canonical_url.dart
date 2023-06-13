@@ -5,9 +5,9 @@ import 'package:path/path.dart' as p;
 class UrlCanonicalizer {
   final bool sort;
   final bool sortValues;
-  final List<String> order;
-  final List<String> whitelist;
-  final List<String> blacklist;
+  final List<String>? order;
+  final List<String>? whitelist;
+  final List<String>? blacklist;
   final bool removeFragment;
 
   UrlCanonicalizer({
@@ -19,16 +19,16 @@ class UrlCanonicalizer {
     this.blacklist,
   });
 
-  T canonicalize<T>(T url, {T context}) {
+  T canonicalize<T>(T url, {T? context}) {
     final uri = url is String ? Uri.parse(url) : url as Uri;
-    final contextUri = context is String ? Uri.parse(context) : context as Uri;
+    final contextUri = context is String ? Uri.parse(context) : context as Uri?;
     final canonical = _canonicalize(_contextualize(uri, contextUri));
     return (url is String ? canonical.toString() : canonical) as T;
   }
 
-  Uri _contextualize(Uri uri, Uri context) {
+  Uri _contextualize(Uri uri, Uri? context) {
     if (context == null) return uri;
-    if (uri.hasScheme && uri.host != null) return uri;
+    if (uri.hasScheme && uri.host.isNotEmpty) return uri;
 
     String path;
     if (uri.path.startsWith('/')) {
@@ -54,13 +54,13 @@ class UrlCanonicalizer {
   }
 
   Uri _canonicalize(Uri uri) {
-    final scheme = uri.scheme?.toLowerCase();
-    final Map<String, List<String>> params = _params(uri);
+    final scheme = uri.scheme.toLowerCase();
+    final params = _params(uri);
     final fragment =
         (removeFragment || !(uri.hasFragment && uri.fragment.isNotEmpty))
             ? null
             : uri.fragment;
-    final int port =
+    final port =
         uri.hasPort && !_matchesPort(scheme, uri.port) ? uri.port : null;
     String path;
     if (uri.hasAbsolutePath) {
@@ -71,10 +71,10 @@ class UrlCanonicalizer {
     } else {
       path = uri.path;
     }
-    final host = uri.host?.toLowerCase();
+    final host = uri.host.toLowerCase();
     return Uri(
       scheme: scheme,
-      host: host == null || host.isEmpty ? null : host,
+      host: host.isEmpty ? null : host,
       port: port,
       path: path,
       queryParameters: params == null || params.isEmpty ? null : params,
@@ -82,19 +82,19 @@ class UrlCanonicalizer {
     );
   }
 
-  Map<String, List<String>> _params(Uri uri) {
-    Map<String, List<String>> params;
+  Map<String, List<String>>? _params(Uri uri) {
+    Map<String, List<String>>? params;
     if (uri.hasQuery) {
       final map = Map<String, List<String>>.from(uri.queryParametersAll);
       blacklist?.forEach(map.remove);
       if (whitelist != null) {
-        map.removeWhere((key, value) => !whitelist.contains(key));
+        map.removeWhere((key, value) => !whitelist!.contains(key));
       }
       if (map.isNotEmpty) {
         params = <String, List<String>>{};
         order?.forEach((p) {
           if (map.containsKey(p)) {
-            params[p] = map[p];
+            params![p] = map[p]!;
           }
         });
         if (params.length != map.length) {
@@ -102,14 +102,14 @@ class UrlCanonicalizer {
           if (sort) {
             final Set<String> set = map.keys.toSet();
             if (order != null) {
-              set.removeAll(order);
+              set.removeAll(order!);
             }
             keys = set.toList()..sort();
           } else {
-            keys = map.keys.where((s) => order == null || !order.contains(s));
+            keys = map.keys.where((s) => order == null || !order!.contains(s));
           }
           for (String key in keys) {
-            params[key] = map[key];
+            params[key] = map[key]!;
           }
         }
         if (sortValues) {
@@ -127,12 +127,12 @@ class UrlCanonicalizer {
     return params;
   }
 
-  List<T> canonicalizeUrls<T>(Iterable<T> urls, {T context}) {
+  List<T> canonicalizeUrls<T>(Iterable<T> urls, {T? context}) {
     return urls.map((T url) => canonicalize(url, context: context)).toList();
   }
 }
 
-bool _matchesPort(String scheme, int port) {
+bool _matchesPort(String scheme, int? port) {
   if (port == null) return true;
   if (scheme == 'http' && port == 80) return true;
   if (scheme == 'https' && port == 443) return true;

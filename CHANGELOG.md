@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+- Upgraded to null safety and Dart 3.
+
 ## 1.0.5
 
 - Modern Dart style.
